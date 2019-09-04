@@ -13,11 +13,10 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 public class GraphBuilder {
 
 	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
-	
+
 	public static Knoten knoten;
 	public Kante kante;
 
@@ -44,34 +43,24 @@ public class GraphBuilder {
 	} // ensure non-instantiability.
 
 	public static void main(String[] args) throws MalformedURLException, ExportException {
-		
 
-//		Graph<String, DefaultEdge> stringGraph = createStringGraph();
-//
-//		// note undirected edges are printed as: {<v1>,<v2>}
-//		System.out.println("-- toString output");
-//		// @example:toString:begin
-//		System.out.println(stringGraph);
-//		// @example:toString:end
-//		System.out.println();
 	}
 
 	public static Graph<String, DefaultEdge> createStringGraph() {
-		
+
 		Graph<String, DefaultEdge> g = new DirectedWeightedPseudograph<>(DefaultEdge.class);
-			for (String s : Liste.keySet()) {
-				for( String z : Liste.get(s)) {
-					if (Liste.containsValue(z) == false){
-						g.addVertex(s);
-						g.addVertex(z);
-						g.addEdge(s, z);}
-					else {
-					g.addVertex(s);	
-					}	
+		for (String s : Liste.keySet()) {
+			for (String z : Liste.get(s)) {
+				if (Liste.containsValue(z) == false) {
+					g.addVertex(s);
+					g.addVertex(z);
+					g.addEdge(s, z);
+				} else {
+					g.addVertex(s);
 				}
 			}
-		
+		}
+
 		return g;
 	}
-	}
-
+}

@@ -17,19 +17,18 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.sun.tools.sjavac.Log;
 
-
 public class XmlReader {
 
 	private static final Logger LOG = LogManager.getLogger(XmlReader.class);
-	 
+
 	public static ArrayList<File> ff = new ArrayList<File>();
 	public static String temp;
 	public static FileReader reader;
 	public static InputSource inputSource;
 
 	public static void main(String[] args) {
-  
-     		try {
+
+		try {
 			// XMLReader erzeugen
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 
@@ -52,11 +51,11 @@ public class XmlReader {
 				// Parsen wird gestartet
 				xmlReader.parse(inputSource);
 			}
-		     System.out.println("The Mappings are: " + GraphBuilder.Liste); 
-		     System.out.println();
-		     LOG.info(GraphBuilder.createStringGraph().toString());
+			System.out.println("The Mappings are: " + GraphBuilder.Liste);
+			System.out.println();
+			LOG.info(GraphBuilder.createStringGraph().toString());
 //			System.out.println(GraphBuilder.createStringGraph().toString());
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -64,10 +63,7 @@ public class XmlReader {
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		
+
 	}
 
 	public static void fetchFiles(File dir, Consumer<File> fileConsumer) {

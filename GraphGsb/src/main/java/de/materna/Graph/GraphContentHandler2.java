@@ -19,12 +19,11 @@ public class GraphContentHandler2 implements ContentHandler {
 	public String x = "/";
 	int z = 0;
 	ArrayList<String> list = new ArrayList<String>();
-	
+
 	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-	
-		
+
 		if (localName.equals("document") && attributes != null) {
 			for (int i = 0; i < attributes.getLength(); i++) {
 				String aname = attributes.getLocalName(i);
@@ -47,17 +46,17 @@ public class GraphContentHandler2 implements ContentHandler {
 				String bname = attributes.getLocalName(i);
 				if (bname.equals("href")) {
 					path = attributes.getValue(i).substring(7);
-					}
+				}
 			}
 			Long nid = knoten.getId();
 			knoten = new Knoten();
 			knoten.setId(nid + 1);
 			knoten.setVertexpath(path);
 			list.add(path);
-	
-			}	
-		
-		GraphBuilder.setAnotherlist(list);	
+
+		}
+
+		GraphBuilder.setAnotherlist(list);
 	}
 
 	@Override
@@ -73,11 +72,9 @@ public class GraphContentHandler2 implements ContentHandler {
 
 	@Override
 	public void endDocument() throws SAXException {
-//		System.out.println("GEBE HASHMAP AUS_______________________________________________________________");
-//		for (Entry e : GraphBuilder.Liste.entrySet()) {
-//			System.out.println(e);
-//		}
+
 	}
+
 	@Override
 	public void startPrefixMapping(String prefix, String uri) throws SAXException {
 		// TODO Auto-generated method stub
@@ -92,9 +89,9 @@ public class GraphContentHandler2 implements ContentHandler {
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-				
+
 		GraphBuilder.Liste.put(pathname, GraphBuilder.getAnotherlist());
-		
+
 	}
 
 	@Override
@@ -120,5 +117,5 @@ public class GraphContentHandler2 implements ContentHandler {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 }
