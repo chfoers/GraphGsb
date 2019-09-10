@@ -1,4 +1,4 @@
-package de.materna.Graph;
+package de.materna.GraphPattern;
 
 public class Knoten {
 	
