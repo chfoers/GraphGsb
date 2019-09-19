@@ -30,7 +30,7 @@ public class GraphContentHandler implements Reader, ContentHandler {
 
 	public static void main(String[] args) {	}
 
-	// erstelle Graph aus der Quelle s (Source)
+	// erstelle Graph aus der Quelle s (urce)
 	@Override
 	public void printGraph(ArrayList<String> s) {
 
