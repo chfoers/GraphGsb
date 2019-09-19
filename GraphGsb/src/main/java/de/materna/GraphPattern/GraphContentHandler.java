@@ -23,13 +23,12 @@ public class GraphContentHandler implements Reader, ContentHandler {
 	public String docName;
 	public String fullPathName;
 	public String x = "/";
+
 	ArrayList<String> list = new ArrayList<String>();
 
 	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
-	public static void main(String[] args) {
-//		printGraph();
-	}
+	public static void main(String[] args) {	}
 
 	// erstelle Graph aus der Quelle s (Source)
 	@Override
@@ -54,8 +53,9 @@ public class GraphContentHandler implements Reader, ContentHandler {
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-
-		LOG.info(GraphBuilder.createStringGraph().toString());
+		
+		GraphBuilder.createStringGraph();
+		LOG.info("TARJAN:"+GraphBuilder.getTarjan());
 		
 	}
 
@@ -85,6 +85,7 @@ public class GraphContentHandler implements Reader, ContentHandler {
 					path = attributes.getValue(i).substring(7);
 				}
 			}
+
 			Long nid = knoten.getId();
 			knoten = new Knoten();
 			knoten.setId(nid + 1);
@@ -92,16 +93,15 @@ public class GraphContentHandler implements Reader, ContentHandler {
 			list.add(path);
 
 		}
-
 		GraphBuilder.setfilllist(list);
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-
-		GraphBuilder.listeKnoten.put(fullPathName, GraphBuilder.getfillList());
-
-	}
+		
+			GraphBuilder.listeKnoten.put(fullPathName, GraphBuilder.getfillList());
+		
+			}
 
 	@Override
 	public void setDocumentLocator(Locator locator) {

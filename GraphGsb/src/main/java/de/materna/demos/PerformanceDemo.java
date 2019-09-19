@@ -61,7 +61,7 @@ public final class PerformanceDemo
         g.addVertex(prev);
 
         int numVertices = 10000;
-        int numEdgesPerVertex = 200;
+        int numEdgesPerVertex = 200;       
         int numElements = numVertices * (1 + numEdgesPerVertex);
 
         System.out.println(
