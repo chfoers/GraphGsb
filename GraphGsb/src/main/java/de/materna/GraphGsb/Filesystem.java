@@ -1,5 +1,5 @@
 
-package de.materna.GraphPattern;
+package de.materna.GraphGsb;
 
 import java.io.File;
 import java.util.ArrayList;

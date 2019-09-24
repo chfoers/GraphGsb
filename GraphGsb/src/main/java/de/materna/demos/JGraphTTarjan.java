@@ -21,7 +21,7 @@ package de.materna.demos;
 import com.mxgraph.layout.*;
 import com.mxgraph.swing.*;
 
-import de.materna.GraphPattern.Reader;
+import de.materna.GraphGsb.Reader;
 
 import org.jgrapht.*;
 import org.jgrapht.ext.*;

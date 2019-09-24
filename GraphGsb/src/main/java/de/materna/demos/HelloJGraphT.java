@@ -24,6 +24,8 @@ import org.jgrapht.graph.*;
 import org.jgrapht.io.*;
 import org.jgrapht.traverse.*;
 
+import com.jgraph.algebra.JGraphUnionFind.Node;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -45,10 +47,12 @@ public final class HelloJGraphT {
 
 	public static Graph<String, DefaultEdge> g = new DirectedWeightedPseudograph<>(DefaultEdge.class);
 	public static Set<String> vertices = g.vertexSet();
+	public static Set<String> tarjans;
+
+	public static List<String> neighborList;
 
 	public static Set<DefaultEdge> u;
-
-	static TarjanSimpleCycles cycl = new TarjanSimpleCycles();
+	static TarjanSimpleCycles<String, DefaultEdge> cyc = new TarjanSimpleCycles<String, DefaultEdge>();
 
 	private HelloJGraphT() {
 	} // ensure non-instantiability.
@@ -65,8 +69,6 @@ public final class HelloJGraphT {
 
 		// @example:toString:begin
 		createStringGraph();
-
-		removev();
 
 	}
 
@@ -87,6 +89,8 @@ public final class HelloJGraphT {
 		String v6 = "v6";
 		String v7 = "v7";
 		String v8 = "v8";
+		String v9 = "v9";
+		String v10 = "v10";
 
 		// add the vertices
 		g.addVertex(v1);
@@ -96,24 +100,71 @@ public final class HelloJGraphT {
 		g.addVertex(v5);
 		g.addVertex(v6);
 		g.addVertex(v7);
-		g.addVertex(v8);
+		g.addVertex(v8); // alleiniger Knoten..
+		g.addVertex(v9); // Knoten mit SelfLoop, Tarjan
+		g.addVertex(v10);// Knoten mit SelfLoop, Tarjan
 
 		// add edges to create a circuit
-		g.addEdge(v1, v2);
+//		g.addEdge(v1, v2);
 		g.addEdge(v2, v3);
 		g.addEdge(v3, v4);
 		g.addEdge(v4, v5);
 		g.addEdge(v4, v2);
 		g.addEdge(v5, v6);
 		g.addEdge(v6, v7);
+		g.addEdge(v9, v9);
+		g.addEdge(v3, v9);
+		g.addEdge(v10, v10);
 
 		System.out.println(g);
-		
-		cycl.setGraph(g);
-		System.out.println(cycl.findSimpleCycles());
-		
-		createStringGraphOBlatt();
 
+		createStringGraphOBlatt();
+		getTarjan();
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static List getTarjan() {
+
+		boolean p = true;
+		String vertex = "";
+		System.out.println(g);
+		cyc.setGraph(g);
+		List<List<String>> listTarjan = cyc.findSimpleCycles();
+		System.out.println("Alle Tarjans" + listTarjan);
+		System.out.println();
+
+		for (int i = 0; i < listTarjan.size(); i++) {
+			System.out.println(listTarjan.get(i));
+			for (int j = 0; j < listTarjan.get(i).size(); j++) {
+				vertex = listTarjan.get(i).get(j);
+				neighborList = Graphs.neighborListOf(g, vertex);
+				System.out.println("Nachbarn von " + vertex + " sind:" + neighborList);
+
+				for (int x = 0; x < neighborList.size(); x++) {
+
+					if (listTarjan.get(i).contains(neighborList.get(x))) {
+						System.out.println(neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " enthalten");
+					} else {
+						System.out.println(
+								neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " NICHT enthalten");
+								p = false;
+					}
+				}
+				
+				
+			}if ( p == false) {
+				System.out.println("Tarjan nicht alleine!");
+				
+			} 
+			else {
+				System.out.println("Tarjan ist alleine!, dieser Tarjan wird jetzt ausgegeben und gelöscht!");
+				System.out.println(vertex);
+				g.removeVertex(vertex);
+				System.out.println(g);
+					}p = true;
+		}
+
+		return listTarjan;
 	}
 
 	public static void removev() {
@@ -123,7 +174,7 @@ public final class HelloJGraphT {
 			x = iter.next();
 			if (g.outgoingEdgesOf(x).size() == 0) {
 				endVertices.add(x);
-				System.out.println("Diese werden gelöscht" + x);
+
 			}
 		}
 		for (String v : endVertices) {
@@ -133,25 +184,24 @@ public final class HelloJGraphT {
 
 		vertices = g.vertexSet();
 		System.out.println("der neue Set von Knoten" + vertices);
-		
+
 	}
-	
-public static void createStringGraphOBlatt() {
-		
+
+	public static void createStringGraphOBlatt() {
+
 		String s;
-		
-		for (int i=0; i<1;i++) {
+
+		for (int i = 0; i < 1; i++) {
 			removev();
 			for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
 				s = iter.next();
 				if (g.outgoingEdgesOf(s).size() == 0) {
-						i--;
-						System.out.println(s);
-						System.out.println(i);
+					i--;
 				}
 			}
 		}
 		System.out.println("Der neue Graph!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + g.toString());
+		System.out.println("Alle gelöschten Blätter:" + endVertices);
 	}
 
 }

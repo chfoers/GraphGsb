@@ -1,4 +1,4 @@
-package de.materna.GraphPattern;
+package de.materna.GraphGsb;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,6 +15,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+
+
 @SuppressWarnings("deprecation")
 public class GraphContentHandler implements Reader, ContentHandler {
 
@@ -30,7 +32,7 @@ public class GraphContentHandler implements Reader, ContentHandler {
 
 	public static void main(String[] args) {	}
 
-	// erstelle Graph aus der Quelle s (urce)
+	// erstelle Graph aus der Quelle s (Source)
 	@Override
 	public void printGraph(ArrayList<String> s) {
 
@@ -54,9 +56,8 @@ public class GraphContentHandler implements Reader, ContentHandler {
 			e.printStackTrace();
 		}
 		
-		GraphBuilder.createStringGraph();
-		LOG.info("TARJAN:"+GraphBuilder.getTarjan());
-		
+		LOG.info(GraphBuilder.createStringGraph());
+	
 	}
 
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

@@ -1,4 +1,4 @@
-package de.materna.GraphPattern;
+package de.materna.GraphGsb;
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -27,6 +27,7 @@ public class GraphBuilder {
 	public static Set<DefaultEdge> outgoingEdge;
 	static TarjanSimpleCycles<String, DefaultEdge> cyc = new TarjanSimpleCycles<String, DefaultEdge>();
 	public static Set<String> vertices = g.vertexSet();
+	public static List<String> neighborList;
 
 //	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
@@ -43,7 +44,7 @@ public class GraphBuilder {
 	public static void main(String[] args) throws MalformedURLException, ExportException {	}
 
 	@SuppressWarnings("unlikely-arg-type")
-	public static void createStringGraph() {
+	public static Graph<String, DefaultEdge> createStringGraph() {
 
 		/**
 		 * GraphenErstellung
@@ -61,16 +62,54 @@ public class GraphBuilder {
 		}
 		System.out.println(g);
 		createStringGraphOBlatt();
+		getTarjan();
+		return g;
 	}
 
 	@SuppressWarnings("rawtypes")
 	public static List getTarjan() {
-		/**
-		 * Tarjan
-		 */
+
+		boolean p = true;
+		String vertex = "";
+		System.out.println(g);
 		cyc.setGraph(g);
-		List a = cyc.findSimpleCycles();
-		return a;
+		List<List<String>> listTarjan = cyc.findSimpleCycles();
+		System.out.println("Alle Tarjans" + listTarjan);
+		System.out.println();
+
+		for (int i = 0; i < listTarjan.size(); i++) {
+			System.out.println(listTarjan.get(i));
+			for (int j = 0; j < listTarjan.get(i).size(); j++) {
+				vertex = listTarjan.get(i).get(j);
+				neighborList = Graphs.neighborListOf(g, vertex);
+				System.out.println("Nachbarn von " + vertex + " sind:" + neighborList);
+
+				for (int x = 0; x < neighborList.size(); x++) {
+
+					if (listTarjan.get(i).contains(neighborList.get(x))) {
+						System.out.println(neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " enthalten");
+					} else {
+						System.out.println(
+								neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " NICHT enthalten");
+								p = false;
+					}
+				}
+				
+				
+			}if ( p == false) {
+				System.out.println("Tarjan nicht alleine!");
+				
+			} 
+			else {
+				System.out.println("Tarjan ist alleine!, dieser Tarjan wird jetzt ausgegeben und gelöscht!");
+				System.out.println(vertex);
+				g.removeVertex(vertex);
+				System.out.println(g);
+					}p = true;
+		}
+	
+		
+		return listTarjan;
 	}
 
 	public static void removev() {
@@ -103,7 +142,9 @@ public class GraphBuilder {
 				}
 			}
 		}
+		System.out.println();
 		System.out.println("Der neue Graph!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + g.toString());
-		
+		System.out.println();
+		System.out.println("gib die Blätter aus"+endVertices);
 	}
 }

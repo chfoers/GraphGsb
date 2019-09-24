@@ -1,4 +1,4 @@
-package de.materna.GraphPattern;
+package de.materna.GraphGsb;
 
 import java.util.ArrayList;
 
