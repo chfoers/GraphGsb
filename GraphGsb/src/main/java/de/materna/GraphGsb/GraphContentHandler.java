@@ -15,8 +15,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-
-
 @SuppressWarnings("deprecation")
 public class GraphContentHandler implements Reader, ContentHandler {
 
@@ -28,13 +26,43 @@ public class GraphContentHandler implements Reader, ContentHandler {
 
 	ArrayList<String> list = new ArrayList<String>();
 
-	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
+//	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
-	public static void main(String[] args) {	}
+	public static void main(String[] args) {
+	}
+	
+	// erstelle Graph aus der Quelle s (Source)
+		@Override
+		public void printGraphA(ArrayList<String> s) {
+
+			try {
+				XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+
+				for (String e : s) {
+					FileReader reader = new FileReader(e);
+					InputSource inputSource = new InputSource(reader);
+					xmlReader.setContentHandler(new GraphContentHandler());
+
+					// Parsen wird gestartet
+					xmlReader.parse(inputSource);
+				}
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
+			}
+
+			GraphBuilder.createStringGraphA();
+
+
+		}
 
 	// erstelle Graph aus der Quelle s (Source)
 	@Override
-	public void printGraph(ArrayList<String> s) {
+	public void printGraphB(ArrayList<String> s) {
 
 		try {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
@@ -55,9 +83,9 @@ public class GraphContentHandler implements Reader, ContentHandler {
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		
-		LOG.info(GraphBuilder.createStringGraph());
-	
+
+		GraphBuilder.createStringGraphB();
+
 	}
 
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -99,10 +127,10 @@ public class GraphContentHandler implements Reader, ContentHandler {
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-		
-			GraphBuilder.listeKnoten.put(fullPathName, GraphBuilder.getfillList());
-		
-			}
+
+		GraphBuilder.listeKnoten.put(fullPathName, GraphBuilder.getfillList());
+
+	}
 
 	@Override
 	public void setDocumentLocator(Locator locator) {

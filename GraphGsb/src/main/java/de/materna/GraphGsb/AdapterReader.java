@@ -10,10 +10,17 @@ public class AdapterReader implements Reader  {
 		public  AdapterReader (Reader r, Source s) {
 			reader =  r;
 			source = s;
+			
 		}
 
-		public void printGraph(ArrayList<String> s) {
-			reader.printGraph(source.getList());
+		public void printGraphB(ArrayList<String> s) {
+			reader.printGraphB(source.getList());
 		
+		}
+
+		@Override
+		public void printGraphA(ArrayList<String> s2) {
+			reader.printGraphA(source.getList2());
+			
 		}
 }

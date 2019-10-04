@@ -1,5 +1,7 @@
 package de.materna.GraphGsb;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
 import org.jgrapht.*;
@@ -28,6 +30,7 @@ public class GraphBuilder {
 	static TarjanSimpleCycles<String, DefaultEdge> cyc = new TarjanSimpleCycles<String, DefaultEdge>();
 	public static Set<String> vertices = g.vertexSet();
 	public static List<String> neighborList;
+	public static List<String> ausgabeKnoten = new ArrayList<>();
 
 //	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
@@ -40,11 +43,54 @@ public class GraphBuilder {
 	}
 
 	public GraphBuilder() {	} // ensure non-instantiability.
+	
+	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
 	public static void main(String[] args) throws MalformedURLException, ExportException {	}
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public static Graph<String, DefaultEdge> createStringGraphA() {
+
+		/**
+		 * GraphenErstellung
+		 */
+		for (String s : listeKnoten.keySet()) {
+			for (String z : listeKnoten.get(s)) {
+				if (listeKnoten.containsValue(z) == false) {
+					g.addVertex(s);
+					g.addVertex(z);
+					g.addEdge(s, z);
+				} else {
+					g.addVertex(s);
+				}
+			}
+		}
+		System.out.println(g);
+		setSelfLoops();
+		getTarjan();
+		return g;
+	}
+	
+	public static void setSelfLoops() {
+//		System.out.println();
+//		System.out.println("an jedem Knoten werden jetzt SelfLoops hinzugefügt");
+
+		Set<String> allvertex = g.vertexSet();
+		
+		
+
+		for (Iterator<String> iter = allvertex.iterator(); iter.hasNext();) {
+			String knoten = iter.next();
+					g.addEdge(knoten, knoten);
+
+		}
+	//	System.out.println(g.edgeSet());
+	//	System.out.println("Der neue Graph" + g);
+	}
+	
 
 	@SuppressWarnings("unlikely-arg-type")
-	public static Graph<String, DefaultEdge> createStringGraph() {
+	public static Graph<String, DefaultEdge> createStringGraphB() {
 
 		/**
 		 * GraphenErstellung
@@ -68,47 +114,53 @@ public class GraphBuilder {
 
 	@SuppressWarnings("rawtypes")
 	public static List getTarjan() {
-
+		
+		System.out.println();
+//		System.out.println("Jetzt folgt der Tarjan-Alg.");
 		boolean p = true;
 		String vertex = "";
-		System.out.println(g);
+	
 		cyc.setGraph(g);
 		List<List<String>> listTarjan = cyc.findSimpleCycles();
-		System.out.println("Alle Tarjans" + listTarjan);
-		System.out.println();
+		//System.out.println("Alle Tarjans" + listTarjan);
+		//System.out.println();
 
 		for (int i = 0; i < listTarjan.size(); i++) {
-			System.out.println(listTarjan.get(i));
+		//	System.out.println(listTarjan.get(i));
 			for (int j = 0; j < listTarjan.get(i).size(); j++) {
 				vertex = listTarjan.get(i).get(j);
 				neighborList = Graphs.neighborListOf(g, vertex);
-				System.out.println("Nachbarn von " + vertex + " sind:" + neighborList);
+			//	System.out.println("Nachbarn von " + vertex + " sind:" + neighborList);
 
 				for (int x = 0; x < neighborList.size(); x++) {
 
 					if (listTarjan.get(i).contains(neighborList.get(x))) {
-						System.out.println(neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " enthalten");
+				//		System.out.println(neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " enthalten");
 					} else {
-						System.out.println(
-								neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " NICHT enthalten");
+//						System.out.println(
+//								neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " NICHT enthalten");
 								p = false;
 					}
 				}
-				
-				
-			}if ( p == false) {
-				System.out.println("Tarjan nicht alleine!");
-				
-			} 
-			else {
-				System.out.println("Tarjan ist alleine!, dieser Tarjan wird jetzt ausgegeben und gelöscht!");
-				System.out.println(vertex);
-				g.removeVertex(vertex);
-				System.out.println(g);
-					}p = true;
-		}
 	
-		
+			}if ( p == false) {
+//				System.out.println("Tarjan nicht alleine!");
+//				System.out.println("");
+			} 
+			 else {
+//					System.out.println("Tarjan ist alleine!, dieser Tarjan wird jetzt ausgegeben und gelöscht!");
+//					System.out.println("");
+//					System.out.println(vertex + " wird gelöscht/ausgegeben");
+					g.removeVertex(vertex);
+					ausgabeKnoten.add(vertex);
+		//			System.out.println("Der Graph der am Ende ausgegeben wird: " + g);
+				}
+				p = true;
+			}
+//			System.out.println("AUSGABE (erst Blätter, dann alleinstehende Tarjans, dann Rest):");
+			ausgabeKnoten.addAll(g.vertexSet());
+			LOG.info(ausgabeKnoten);
+			ausgabeKnoten.clear();
 		return listTarjan;
 	}
 
@@ -119,7 +171,7 @@ public class GraphBuilder {
 			x = iter.next();
 			if (g.outgoingEdgesOf(x).size() == 0) {
 				endVertices.add(x);
-				
+				ausgabeKnoten.add(x);
 			}
 		}
 		for (String v : endVertices) {
@@ -143,8 +195,8 @@ public class GraphBuilder {
 			}
 		}
 		System.out.println();
-		System.out.println("Der neue Graph!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + g.toString());
-		System.out.println();
-		System.out.println("gib die Blätter aus"+endVertices);
+//		System.out.println("Der neue Graph!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + g.toString());
+//		System.out.println();
+//		System.out.println("gib die Blätter aus"+endVertices);
 	}
 }

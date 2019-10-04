@@ -25,6 +25,7 @@ public class Filesystem implements Source {
 
 			list.add(s);
 		}
+		
 		return list;
 	}
 

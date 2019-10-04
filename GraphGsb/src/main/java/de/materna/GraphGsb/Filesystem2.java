@@ -7,7 +7,7 @@ import java.util.List;
 public class Filesystem2 implements Source {
 
 	public static File folder = new File(
-			"C:\\Users\\cfoerste\\Desktop\\contenttest\\SharedDocs\\Glossareintraege");
+			"C:\\Users\\cfoerste\\Desktop\\contenttest\\SharedDocs\\SharedDocs\\Personen\\EN");
 	static List<String> result = new ArrayList<>();
 
 	public Filesystem2() {
