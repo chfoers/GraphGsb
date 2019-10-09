@@ -22,13 +22,13 @@ package de.materna.demos;
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
 import org.jgrapht.io.*;
-import org.jgrapht.traverse.*;
+
 
 
 
 import java.io.*;
 
-import java.net.*;
+
 import java.util.*;
 
 
@@ -37,11 +37,11 @@ import java.util.*;
 public final class TestB {
 	final static List<String> endVertices = new ArrayList<>();
 	public static Set<String> v;
-
+	public static FileOutputTest fileOutputTest = new FileOutputTest();
 	public static Graph<String, DefaultEdge> g = new DirectedWeightedPseudograph<>(DefaultEdge.class);
 	public static Set<String> vertices = g.vertexSet();
 	public static Set<String> tarjans;
-	public static List<String> ausgabeKnoten = new ArrayList<>();
+	public static List<String> ausgabeKnoten = new ArrayList<String>();
 	public static List<String> neighborList;
 
 	public static Set<DefaultEdge> u;
@@ -64,6 +64,7 @@ public final class TestB {
 		
         reportPerformanceFor("starting at", time);
 		// @example:toString:begin
+        fileOutputTest.delete();
 		createStringGraph();
 		reportPerformanceFor("graph allocation", time);
 		
@@ -90,6 +91,7 @@ public final class TestB {
 		String v8 = "v8";
 		String v9 = "v9";
 		String v10 = "v10";
+		String v11 = "v11";
 
 		// add the vertices
 		g.addVertex(v1);
@@ -102,6 +104,7 @@ public final class TestB {
 		g.addVertex(v8); // alleiniger Knoten..
 		g.addVertex(v9); // Knoten mit SelfLoop, Tarjan
 		g.addVertex(v10);// Knoten mit SelfLoop, Tarjan
+		g.addVertex(v11);
 
 		// add edges to create a circuit
 		g.addEdge(v1, v2);
@@ -114,8 +117,19 @@ public final class TestB {
 		g.addEdge(v9, v9);
 		g.addEdge(v3, v9);
 		g.addEdge(v10, v10);
+		g.addEdge(v5, v11);
+		g.addEdge(v11, v7);
 		
-		System.out.println(g);
+//		g.addEdge(v2, v1);
+//		g.addEdge(v3, v2);
+//		g.addEdge(v4, v3);
+//		g.addEdge(v5, v4);
+//		g.addEdge(v2, v4);
+//		g.addEdge(v6, v5);
+//		g.addEdge(v7, v6);
+//		g.addEdge(v9, v9);
+//		g.addEdge(v9, v3);
+//		g.addEdge(v10, v10);	
 
 		createStringGraphOBlatt();
 		getTarjan();
@@ -123,61 +137,43 @@ public final class TestB {
 
 	@SuppressWarnings("rawtypes")
 	public static List getTarjan() throws IOException {
-		System.out.println();
-		System.out.println("Jetzt folgt der Tarjan-Alg.");
+		
 		boolean p = true;
 		String vertex = "";
-
 		cyc.setGraph(g);
 		List<List<String>> listTarjan = cyc.findSimpleCycles();
-		System.out.println("Alle Tarjans" + listTarjan);
-		System.out.println();
 
 		for (int i = 0; i < listTarjan.size(); i++) {
-			System.out.println(listTarjan.get(i));
 			for (int j = 0; j < listTarjan.get(i).size(); j++) {
 				vertex = listTarjan.get(i).get(j);
 				neighborList = Graphs.neighborListOf(g, vertex);
-				System.out.println("Nachbarn von " + vertex + " sind:" + neighborList);
-
 				for (int x = 0; x < neighborList.size(); x++) {
 
-					if (listTarjan.get(i).contains(neighborList.get(x))) {
-						System.out.println(neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " enthalten");
-					} else {
-						System.out.println(
-								neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " NICHT enthalten");
-								p = false;
+					if (listTarjan.get(i).contains(neighborList.get(x))) {} 
+					else {
+						p = false;
 					}
 				}
-				
-				
-			}if ( p == false) {
-				System.out.println("Tarjan nicht alleine!");
-				System.out.println("");
-			} 
-			else {
-				System.out.println("Tarjan ist alleine!, dieser Tarjan wird jetzt ausgegeben und gelöscht!");
-				System.out.println("");
-				System.out.println(vertex+" wird gelöscht/ausgegeben");
+			}
+			
+			if (p == true) {
 				g.removeVertex(vertex);
 				ausgabeKnoten.add(vertex);
-				System.out.println("Der Graph der am Ende ausgegeben wird: "+g);
-					}p = true;
+				fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+				fileOutputTest.write();
+				ausgabeKnoten.clear();
+			}
+			p = true;
 		}
-		System.out.println("AUSGABE (erst Blätter, dann alleinstehende Tarjans, dann Rest):");
 		ausgabeKnoten.addAll(g.vertexSet());
-		System.out.println(ausgabeKnoten);
-//		for (int x = 0; x <ausgabeKnoten.size() ;x++) {
-//			System.out.println(ausgabeKnoten.get(x));
-//		
-//		}
+		fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+		fileOutputTest.write();
+		ausgabeKnoten.clear();
 
 		return listTarjan;
 	}
 
 	public static void removev() {
-
 		String x;
 		for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
 			x = iter.next();
@@ -186,31 +182,29 @@ public final class TestB {
 				ausgabeKnoten.add(x);
 			}
 		}
+		fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+		fileOutputTest.write();
+		ausgabeKnoten.clear();
 		for (String v : endVertices) {
-
 			g.removeVertex(v);
 		}
-
+		endVertices.clear();
 		vertices = g.vertexSet();
-		System.out.println("der neue Set von Knoten" + vertices);
 
 	}
 
 	public static void createStringGraphOBlatt() {
-
 		String s;
-
-		for (int i = 0; i < 1; i++) {
-			removev();
-			for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
-				s = iter.next();
-				if (g.outgoingEdgesOf(s).size() == 0) {
-					i--;
-				}
+		removev();
+		for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
+			s = iter.next();
+			if (g.outgoingEdgesOf(s).size() == 0) {
+				endVertices.add(s);
 			}
 		}
-		System.out.println("Der neue Graph!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + g.toString());
-		System.out.println("Alle gelöschten Blätter:" + ausgabeKnoten);
+		if (endVertices.isEmpty() == false) {
+			createStringGraphOBlatt();
+		} 
 	}
 
 	private static void reportPerformanceFor(String msg, long refTime)
@@ -224,7 +218,6 @@ public final class TestB {
     private static long usedMemory()
     {
         Runtime rt = Runtime.getRuntime();
-
         return rt.totalMemory() - rt.freeMemory();
     }
 

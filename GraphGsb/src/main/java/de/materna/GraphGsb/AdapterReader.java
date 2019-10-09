@@ -2,25 +2,25 @@ package de.materna.GraphGsb;
 
 import java.util.ArrayList;
 
-public class AdapterReader implements Reader  {
+public class AdapterReader implements Reader {
 
-		private Reader reader;
-		private Source source;
-	
-		public  AdapterReader (Reader r, Source s) {
-			reader =  r;
-			source = s;
-			
-		}
+	private Reader reader;
+	private Source source;
 
-		public void printGraphB(ArrayList<String> s) {
-			reader.printGraphB(source.getList());
-		
-		}
+	public AdapterReader(Reader r, Source s) {
+		reader = r;
+		source = s;
 
-		@Override
-		public void printGraphA(ArrayList<String> s2) {
-			reader.printGraphA(source.getList2());
-			
-		}
+	}
+
+	public void printGraphB(ArrayList<String> s) {
+		reader.printGraphB(source.getList());
+
+	}
+
+	@Override
+	public void printGraphA(ArrayList<String> s2) {
+		reader.printGraphA(source.getList2());
+
+	}
 }

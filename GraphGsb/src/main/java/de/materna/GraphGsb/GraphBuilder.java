@@ -22,7 +22,7 @@ import java.util.Set;
 public class GraphBuilder {
 
 	public static HashMap<String, ArrayList<String>> listeKnoten = new HashMap<String, ArrayList<String>>();
-	//fillList wird bei Klasse GraphContentHandler gefüllt
+	// fillList wird bei Klasse GraphContentHandler gefüllt
 	public static ArrayList<String> fillList = new ArrayList<String>();
 	public static Graph<String, DefaultEdge> g = new DirectedPseudograph<>(DefaultEdge.class);
 	public static List<String> endVertices = new ArrayList<>();
@@ -31,6 +31,8 @@ public class GraphBuilder {
 	public static Set<String> vertices = g.vertexSet();
 	public static List<String> neighborList;
 	public static List<String> ausgabeKnoten = new ArrayList<>();
+
+	public static FileOutput fileOutput = new FileOutput();
 
 //	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
@@ -42,18 +44,16 @@ public class GraphBuilder {
 		GraphBuilder.fillList = fillList;
 	}
 
-	public GraphBuilder() {	} // ensure non-instantiability.
-	
+	public GraphBuilder() {
+	} // ensure non-instantiability.
+
 	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
-	public static void main(String[] args) throws MalformedURLException, ExportException {	}
-	
+	public static void main(String[] args) throws MalformedURLException, ExportException {
+	}
+
 	@SuppressWarnings("unlikely-arg-type")
 	public static Graph<String, DefaultEdge> createStringGraphA() {
-
-		/**
-		 * GraphenErstellung
-		 */
 		for (String s : listeKnoten.keySet()) {
 			for (String z : listeKnoten.get(s)) {
 				if (listeKnoten.containsValue(z) == false) {
@@ -65,36 +65,22 @@ public class GraphBuilder {
 				}
 			}
 		}
-		System.out.println(g);
 		setSelfLoops();
 		getTarjan();
 		return g;
 	}
-	
+
 	public static void setSelfLoops() {
-//		System.out.println();
-//		System.out.println("an jedem Knoten werden jetzt SelfLoops hinzugefügt");
-
 		Set<String> allvertex = g.vertexSet();
-		
-		
-
 		for (Iterator<String> iter = allvertex.iterator(); iter.hasNext();) {
 			String knoten = iter.next();
-					g.addEdge(knoten, knoten);
-
+			g.addEdge(knoten, knoten);
 		}
-	//	System.out.println(g.edgeSet());
-	//	System.out.println("Der neue Graph" + g);
 	}
-	
 
 	@SuppressWarnings("unlikely-arg-type")
 	public static Graph<String, DefaultEdge> createStringGraphB() {
 
-		/**
-		 * GraphenErstellung
-		 */
 		for (String s : listeKnoten.keySet()) {
 			for (String z : listeKnoten.get(s)) {
 				if (listeKnoten.containsValue(z) == false) {
@@ -106,7 +92,6 @@ public class GraphBuilder {
 				}
 			}
 		}
-		System.out.println(g);
 		createStringGraphOBlatt();
 		getTarjan();
 		return g;
@@ -114,58 +99,43 @@ public class GraphBuilder {
 
 	@SuppressWarnings("rawtypes")
 	public static List getTarjan() {
-		
-		System.out.println();
-//		System.out.println("Jetzt folgt der Tarjan-Alg.");
+
 		boolean p = true;
 		String vertex = "";
-	
 		cyc.setGraph(g);
 		List<List<String>> listTarjan = cyc.findSimpleCycles();
-		//System.out.println("Alle Tarjans" + listTarjan);
-		//System.out.println();
 
 		for (int i = 0; i < listTarjan.size(); i++) {
-		//	System.out.println(listTarjan.get(i));
 			for (int j = 0; j < listTarjan.get(i).size(); j++) {
 				vertex = listTarjan.get(i).get(j);
 				neighborList = Graphs.neighborListOf(g, vertex);
-			//	System.out.println("Nachbarn von " + vertex + " sind:" + neighborList);
-
 				for (int x = 0; x < neighborList.size(); x++) {
 
 					if (listTarjan.get(i).contains(neighborList.get(x))) {
-				//		System.out.println(neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " enthalten");
 					} else {
-//						System.out.println(
-//								neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " NICHT enthalten");
-								p = false;
+						p = false;
 					}
 				}
-	
-			}if ( p == false) {
-//				System.out.println("Tarjan nicht alleine!");
-//				System.out.println("");
-			} 
-			 else {
-//					System.out.println("Tarjan ist alleine!, dieser Tarjan wird jetzt ausgegeben und gelöscht!");
-//					System.out.println("");
-//					System.out.println(vertex + " wird gelöscht/ausgegeben");
-					g.removeVertex(vertex);
-					ausgabeKnoten.add(vertex);
-		//			System.out.println("Der Graph der am Ende ausgegeben wird: " + g);
-				}
-				p = true;
 			}
-//			System.out.println("AUSGABE (erst Blätter, dann alleinstehende Tarjans, dann Rest):");
-			ausgabeKnoten.addAll(g.vertexSet());
-			LOG.info(ausgabeKnoten);
-			ausgabeKnoten.clear();
+
+			if (p == true) {
+				g.removeVertex(vertex);
+				ausgabeKnoten.add(vertex);
+				fileOutput.setAusgabeKnoten(ausgabeKnoten);
+				fileOutput.write();
+				ausgabeKnoten.clear();
+			}
+			p = true;
+		}
+		ausgabeKnoten.addAll(g.vertexSet());
+		fileOutput.setAusgabeKnoten(ausgabeKnoten);
+		fileOutput.write();
+		ausgabeKnoten.clear();
+
 		return listTarjan;
 	}
 
 	public static void removev() {
-
 		String x;
 		for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
 			x = iter.next();
@@ -174,29 +144,28 @@ public class GraphBuilder {
 				ausgabeKnoten.add(x);
 			}
 		}
+		fileOutput.setAusgabeKnoten(ausgabeKnoten);
+		fileOutput.write();
+		ausgabeKnoten.clear();
 		for (String v : endVertices) {
 			g.removeVertex(v);
 		}
+		endVertices.clear();
 		vertices = g.vertexSet();
+
 	}
 
 	public static void createStringGraphOBlatt() {
-		
 		String s;
-		
-		for (int i=0; i<1;i++) {
-			removev();
-			for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
-				s = iter.next();
-				if (g.outgoingEdgesOf(s).size() == 0) {
-						i--;
-						
-				}
+		removev();
+		for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
+			s = iter.next();
+			if (g.outgoingEdgesOf(s).size() == 0) {
+				endVertices.add(s);
 			}
 		}
-		System.out.println();
-//		System.out.println("Der neue Graph!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + g.toString());
-//		System.out.println();
-//		System.out.println("gib die Blätter aus"+endVertices);
+		if (endVertices.isEmpty() == false) {
+			createStringGraphOBlatt();
+		}
 	}
 }

@@ -14,7 +14,6 @@ public class Filesystem implements Source {
 	}
 
 	public static void main(String[] args) {
-//		getList();
 	}
 
 	@Override
@@ -22,10 +21,9 @@ public class Filesystem implements Source {
 		ArrayList<String> list = new ArrayList<String>();
 		search(".*\\.xml", folder, result);
 		for (String s : result) {
-
 			list.add(s);
 		}
-		
+
 		return list;
 	}
 
@@ -35,13 +33,11 @@ public class Filesystem implements Source {
 			if (f.isDirectory()) {
 				search(pattern, f, result);
 			}
-
 			if (f.isFile()) {
 				if (f.getName().matches(pattern)) {
 					result.add(f.getAbsolutePath());
 				}
 			}
-
 		}
 	}
 

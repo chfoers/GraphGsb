@@ -19,7 +19,7 @@ package de.materna.demos;
 
 import java.util.*;
 
-import org.jgrapht.graph.DefaultEdge;
+
 
 /**
  * A common interface for classes implementing algorithms for enumeration of the simple cycles of a

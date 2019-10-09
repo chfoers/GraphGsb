@@ -5,8 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -25,42 +25,39 @@ public class GraphContentHandler implements Reader, ContentHandler {
 	public String x = "/";
 
 	ArrayList<String> list = new ArrayList<String>();
+	public static FileOutput fileOutput = new FileOutput();
 
 //	private static final Logger LOG = LogManager.getLogger(GraphBuilder.class);
 
 	public static void main(String[] args) {
 	}
-	
-	// erstelle Graph aus der Quelle s (Source)
-		@Override
-		public void printGraphA(ArrayList<String> s) {
 
-			try {
-				XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+	@Override
+	public void printGraphA(ArrayList<String> s) {
 
-				for (String e : s) {
-					FileReader reader = new FileReader(e);
-					InputSource inputSource = new InputSource(reader);
-					xmlReader.setContentHandler(new GraphContentHandler());
+		try {
+			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 
-					// Parsen wird gestartet
-					xmlReader.parse(inputSource);
-				}
+			for (String e : s) {
+				FileReader reader = new FileReader(e);
+				InputSource inputSource = new InputSource(reader);
+				xmlReader.setContentHandler(new GraphContentHandler());
 
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
+				xmlReader.parse(inputSource);
 			}
 
-			GraphBuilder.createStringGraphA();
-
-
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
 		}
+		fileOutput.delete();
+		GraphBuilder.createStringGraphA();
 
-	// erstelle Graph aus der Quelle s (Source)
+	}
+
 	@Override
 	public void printGraphB(ArrayList<String> s) {
 
@@ -72,7 +69,6 @@ public class GraphContentHandler implements Reader, ContentHandler {
 				InputSource inputSource = new InputSource(reader);
 				xmlReader.setContentHandler(new GraphContentHandler());
 
-				// Parsen wird gestartet
 				xmlReader.parse(inputSource);
 			}
 
@@ -83,7 +79,7 @@ public class GraphContentHandler implements Reader, ContentHandler {
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-
+		fileOutput.delete();
 		GraphBuilder.createStringGraphB();
 
 	}
@@ -123,6 +119,7 @@ public class GraphContentHandler implements Reader, ContentHandler {
 
 		}
 		GraphBuilder.setfilllist(list);
+
 	}
 
 	@Override

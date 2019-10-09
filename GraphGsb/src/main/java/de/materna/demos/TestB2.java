@@ -22,34 +22,25 @@ package de.materna.demos;
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
 import org.jgrapht.io.*;
-import java.net.*;
+
+import java.io.*;
+
 import java.util.*;
 
-//@example:urlCreate:end
-//@example:render:begin
-//@example:render:end
-//@example:urlCreate:begin
-//@example:urlCreate:end
-
-/**
- * A simple introduction to using JGraphT.
- *
- * @author Barak Naveh
- */
-public final class TestA {
+public final class TestB2 {
 	final static List<String> endVertices = new ArrayList<>();
 	public static Set<String> v;
-
+	public static FileOutputTest fileOutputTest = new FileOutputTest();
 	public static Graph<String, DefaultEdge> g = new DirectedWeightedPseudograph<>(DefaultEdge.class);
 	public static Set<String> vertices = g.vertexSet();
 	public static Set<String> tarjans;
-	public static List<String> ausgabeKnoten = new ArrayList<>();
+	public static List<String> ausgabeKnoten = new ArrayList<String>();
 	public static List<String> neighborList;
-	public static PerformanceDemo perofmance = new PerformanceDemo();
+
 	public static Set<DefaultEdge> u;
 	static TarjanSimpleCycles<String, DefaultEdge> cyc = new TarjanSimpleCycles<String, DefaultEdge>();
 
-	private TestA() {
+	private TestB2() {
 	} // ensure non-instantiability.
 
 	/**
@@ -57,30 +48,30 @@ public final class TestA {
 	 * 
 	 * @param args ignored.
 	 *
-	 * @throws MalformedURLException if invalid URL is constructed.
-	 * @throws ExportException       if graph cannot be exported.
+	 * @throws ExportException if graph cannot be exported.
+	 * @throws IOException
 	 */
-	public static void main(String[] args) throws MalformedURLException, ExportException {
-		
+	public static void main(String[] args) throws ExportException, IOException {
+
 		long time = System.currentTimeMillis();
-		
+
 		reportPerformanceFor("starting at", time);
 		// @example:toString:begin
+		fileOutputTest.delete();
 		createStringGraph();
+		reportPerformanceFor("graph allocation", time);
 
-		reportPerformanceFor("starting at", time);
 	}
-
-	
 
 	/**
 	 * Creates a toy directed graph based on URL objects that represents link
 	 * structure.
 	 *
 	 * @return a graph based on URL objects.
+	 * @throws IOException
 	 */
 
-	private static void createStringGraph() {
+	private static void createStringGraph() throws IOException {
 
 		String v1 = "v1";
 		String v2 = "v2";
@@ -92,7 +83,7 @@ public final class TestA {
 		String v8 = "v8";
 		String v9 = "v9";
 		String v10 = "v10";
-
+		String v11 = "v11";
 		// add the vertices
 		g.addVertex(v1);
 		g.addVertex(v2);
@@ -104,6 +95,7 @@ public final class TestA {
 		g.addVertex(v8); // alleiniger Knoten..
 		g.addVertex(v9); // Knoten mit SelfLoop, Tarjan
 		g.addVertex(v10);// Knoten mit SelfLoop, Tarjan
+		g.addVertex(v11);
 
 		// add edges to create a circuit
 		g.addEdge(v1, v2);
@@ -115,83 +107,68 @@ public final class TestA {
 		g.addEdge(v6, v7);
 		g.addEdge(v9, v9);
 		g.addEdge(v3, v9);
+		g.addEdge(v10, v10);
+		g.addEdge(v5, v11);
+		g.addEdge(v11, v7);
 		
+//		g.addEdge(v2, v1);
+//		g.addEdge(v3, v2);
+//		g.addEdge(v4, v3);
+//		g.addEdge(v5, v4);
+//		g.addEdge(v2, v4);
+//		g.addEdge(v6, v5);
+//		g.addEdge(v7, v6);
+//		g.addEdge(v9, v9);
+//		g.addEdge(v9, v3);
+//		g.addEdge(v10, v10);
 
 		System.out.println(g);
 
-		setSelfLoops();
+		createStringGraphOBlatt();
 		getTarjan();
 	}
 
-	public static void setSelfLoops() {
-		System.out.println();
-		System.out.println("an jedem Knoten werden jetzt SelfLoops hinzugefügt");
-
-		Set<String> allvertex = g.vertexSet();
-		
-		
-
-		for (Iterator<String> iter = allvertex.iterator(); iter.hasNext();) {
-			String knoten = iter.next();
-					g.addEdge(knoten, knoten);
-
-		}
-		System.out.println(g.edgeSet());
-		System.out.println("Der neue Graph" + g);
-	}
-
 	@SuppressWarnings("rawtypes")
-	public static List getTarjan() {
-		
-		System.out.println();
-		System.out.println("Jetzt folgt der Tarjan-Alg.");
+	public static List getTarjan() throws IOException {
+
 		boolean p = true;
 		String vertex = "";
-		
+
 		cyc.setGraph(g);
 		List<List<String>> listTarjan = cyc.findSimpleCycles();
 		System.out.println("Alle Tarjans" + listTarjan);
-		System.out.println();
 
 		for (int i = 0; i < listTarjan.size(); i++) {
-			System.out.println(listTarjan.get(i));
 			for (int j = 0; j < listTarjan.get(i).size(); j++) {
 				vertex = listTarjan.get(i).get(j);
 				neighborList = Graphs.neighborListOf(g, vertex);
-				System.out.println("Nachbarn von " + vertex + " sind:" + neighborList);
-
 				for (int x = 0; x < neighborList.size(); x++) {
 
-					if (listTarjan.get(i).contains(neighborList.get(x))) {
-						System.out.println(neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " enthalten");
-					} else {
-						System.out.println(
-								neighborList.get(x) + " ist im Tarjan " + listTarjan.get(i) + " NICHT enthalten");
+					if (listTarjan.get(i).contains(neighborList.get(x))) {} 
+					else {
 						p = false;
 					}
 				}
-
 			}
-			if (p == false) {
-				System.out.println("Tarjan nicht alleine!");
-				System.out.println("");
-			} else {
-				System.out.println("Tarjan ist alleine!, dieser Tarjan wird jetzt ausgegeben und gelöscht!");
-				System.out.println("");
-				System.out.println(vertex + " wird gelöscht/ausgegeben");
+			
+			if (p == false) {} 
+			else {
 				g.removeVertex(vertex);
 				ausgabeKnoten.add(vertex);
-				System.out.println("Der Graph der am Ende ausgegeben wird: " + g);
+				fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+				System.out.println(fileOutputTest.getAusgabeKnoten());
+				fileOutputTest.write();
+				ausgabeKnoten.clear();
 			}
 			p = true;
 		}
-		System.out.println("AUSGABE (erst Blätter, dann alleinstehende Tarjans, dann Rest):");
+
 		ausgabeKnoten.addAll(g.vertexSet());
-		System.out.println(ausgabeKnoten);
-//		for (int x = 0; x <ausgabeKnoten.size() ;x++) {
-//			System.out.println(ausgabeKnoten.get(x));
-//		
-//		}
+		fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+		System.out.println(fileOutputTest.getAusgabeKnoten());
+		fileOutputTest.write();
+		ausgabeKnoten.clear();
+
 		return listTarjan;
 	}
 
@@ -206,29 +183,49 @@ public final class TestA {
 
 			}
 		}
+		fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+		System.out.println(fileOutputTest.getAusgabeKnoten());
+		fileOutputTest.write();
+		ausgabeKnoten.clear();
 		for (String v : endVertices) {
 
 			g.removeVertex(v);
 		}
-
+		endVertices.clear();
 		vertices = g.vertexSet();
-		System.out.println("der neue Set von Knoten" + vertices);
 
 	}
-	
-	private static void reportPerformanceFor(String msg, long refTime)
-    {
-        double time = (System.currentTimeMillis() - refTime) / 1000.0;
-        double mem = usedMemory() / (1024.0 * 1024.0);
-        mem = Math.round(mem * 100) / 100.0;
-        System.out.println(msg + " (" + time + " sec, " + mem + "MB)");
-    }
 
-    private static long usedMemory()
-    {
-        Runtime rt = Runtime.getRuntime();
+	public static void createStringGraphOBlatt() {
+		String s;
+		removev();
+		for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
+			s = iter.next();
+			if (g.outgoingEdgesOf(s).size() == 0) {
+				endVertices.add(s);
+				System.out.println("Dieser Blatt hat ein Blatt" + s);
+			}
+		}
+		if (endVertices.isEmpty() == true) {
+			System.out.println("es sind keine Blätter mehr vorhanden");
+		} else {
+			System.out.println("es sind noch Blätter vorhanden");
+			createStringGraphOBlatt();
 
-        return rt.totalMemory() - rt.freeMemory();
-    }
+		}
+	}
+
+	private static void reportPerformanceFor(String msg, long refTime) {
+		double time = (System.currentTimeMillis() - refTime) / 1000.0;
+		double mem = usedMemory() / (1024.0 * 1024.0);
+		mem = Math.round(mem * 100) / 100.0;
+		System.out.println(msg + " (" + time + " sec, " + mem + "MB)");
+	}
+
+	private static long usedMemory() {
+		Runtime rt = Runtime.getRuntime();
+
+		return rt.totalMemory() - rt.freeMemory();
+	}
 
 }
