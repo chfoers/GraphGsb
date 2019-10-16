@@ -23,16 +23,9 @@ import org.jgrapht.*;
 import org.jgrapht.graph.*;
 import org.jgrapht.io.*;
 
-
-
-
 import java.io.*;
 
-
 import java.util.*;
-
-
-
 
 public final class TestB {
 	final static List<String> endVertices = new ArrayList<>();
@@ -55,20 +48,19 @@ public final class TestB {
 	 * 
 	 * @param args ignored.
 	 *
-	 * @throws ExportException       if graph cannot be exported.
-	 * @throws IOException 
+	 * @throws ExportException if graph cannot be exported.
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws ExportException, IOException {
-		
+
 		long time = System.currentTimeMillis();
-		
-        reportPerformanceFor("starting at", time);
+
+		reportPerformanceFor("starting at", time);
 		// @example:toString:begin
-        fileOutputTest.delete();
+		fileOutputTest.delete();
 		createStringGraph();
 		reportPerformanceFor("graph allocation", time);
-		
-		 
+
 	}
 
 	/**
@@ -76,7 +68,7 @@ public final class TestB {
 	 * structure.
 	 *
 	 * @return a graph based on URL objects.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 
 	private static void createStringGraph() throws IOException {
@@ -92,7 +84,6 @@ public final class TestB {
 		String v9 = "v9";
 		String v10 = "v10";
 		String v11 = "v11";
-
 		// add the vertices
 		g.addVertex(v1);
 		g.addVertex(v2);
@@ -129,7 +120,9 @@ public final class TestB {
 //		g.addEdge(v7, v6);
 //		g.addEdge(v9, v9);
 //		g.addEdge(v9, v3);
-//		g.addEdge(v10, v10);	
+//		g.addEdge(v10, v10);
+
+		System.out.println(g);
 
 		createStringGraphOBlatt();
 		getTarjan();
@@ -137,11 +130,13 @@ public final class TestB {
 
 	@SuppressWarnings("rawtypes")
 	public static List getTarjan() throws IOException {
-		
+
 		boolean p = true;
 		String vertex = "";
+
 		cyc.setGraph(g);
 		List<List<String>> listTarjan = cyc.findSimpleCycles();
+		System.out.println("Alle Tarjans" + listTarjan);
 
 		for (int i = 0; i < listTarjan.size(); i++) {
 			for (int j = 0; j < listTarjan.get(i).size(); j++) {
@@ -156,17 +151,21 @@ public final class TestB {
 				}
 			}
 			
-			if (p == true) {
+			if (p == false) {} 
+			else {
 				g.removeVertex(vertex);
 				ausgabeKnoten.add(vertex);
 				fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+				System.out.println(fileOutputTest.getAusgabeKnoten());
 				fileOutputTest.write();
 				ausgabeKnoten.clear();
 			}
 			p = true;
 		}
+
 		ausgabeKnoten.addAll(g.vertexSet());
 		fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+		System.out.println(fileOutputTest.getAusgabeKnoten());
 		fileOutputTest.write();
 		ausgabeKnoten.clear();
 
@@ -174,18 +173,22 @@ public final class TestB {
 	}
 
 	public static void removev() {
+
 		String x;
 		for (Iterator<String> iter = vertices.iterator(); iter.hasNext();) {
 			x = iter.next();
 			if (g.outgoingEdgesOf(x).size() == 0) {
 				endVertices.add(x);
 				ausgabeKnoten.add(x);
+
 			}
 		}
 		fileOutputTest.setAusgabeKnoten(ausgabeKnoten);
+		System.out.println(fileOutputTest.getAusgabeKnoten());
 		fileOutputTest.write();
 		ausgabeKnoten.clear();
 		for (String v : endVertices) {
+
 			g.removeVertex(v);
 		}
 		endVertices.clear();
@@ -200,26 +203,29 @@ public final class TestB {
 			s = iter.next();
 			if (g.outgoingEdgesOf(s).size() == 0) {
 				endVertices.add(s);
+				System.out.println("Dieser Blatt hat ein Blatt" + s);
 			}
 		}
-		if (endVertices.isEmpty() == false) {
+		if (endVertices.isEmpty() == true) {
+			System.out.println("es sind keine Blätter mehr vorhanden");
+		} else {
+			System.out.println("es sind noch Blätter vorhanden");
 			createStringGraphOBlatt();
-		} 
+
+		}
 	}
 
-	private static void reportPerformanceFor(String msg, long refTime)
-    {
-        double time = (System.currentTimeMillis() - refTime) / 1000.0;
-        double mem = usedMemory() / (1024.0 * 1024.0);
-        mem = Math.round(mem * 100) / 100.0;
-        System.out.println(msg + " (" + time + " sec, " + mem + "MB)");
-    }
+	private static void reportPerformanceFor(String msg, long refTime) {
+		double time = (System.currentTimeMillis() - refTime) / 1000.0;
+		double mem = usedMemory() / (1024.0 * 1024.0);
+		mem = Math.round(mem * 100) / 100.0;
+		System.out.println(msg + " (" + time + " sec, " + mem + "MB)");
+	}
 
-    private static long usedMemory()
-    {
-        Runtime rt = Runtime.getRuntime();
-        return rt.totalMemory() - rt.freeMemory();
-    }
+	private static long usedMemory() {
+		Runtime rt = Runtime.getRuntime();
 
-    
+		return rt.totalMemory() - rt.freeMemory();
+	}
+
 }
