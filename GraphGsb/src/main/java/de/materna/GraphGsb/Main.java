@@ -3,8 +3,8 @@ package de.materna.GraphGsb;
 public class Main {
 
 	public static void main(String[] args) {
-		//algA();
-		algB();
+	//algA();
+	algB();
 	}
 
 	public static void algB() {

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Stack;
 
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
@@ -31,6 +32,8 @@ public class GraphContentHandler implements Reader, ContentHandler {
 
 	public static void main(String[] args) {
 	}
+	
+	private Stack currentElement = new Stack();
 
 	@Override
 	public void printGraphA(ArrayList<String> s) {
@@ -119,14 +122,14 @@ public class GraphContentHandler implements Reader, ContentHandler {
 
 		}
 		GraphBuilder.setfilllist(list);
-
+		 currentElement.push(qName);
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 
 		GraphBuilder.listeKnoten.put(fullPathName, GraphBuilder.getfillList());
-
+		currentElement.pop();
 	}
 
 	@Override
@@ -172,8 +175,22 @@ public class GraphContentHandler implements Reader, ContentHandler {
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		// TODO Auto-generated method stub
-
-	}
+	    String cdata = new String(ch, start, length);
+	    
+//	    System.out.println("Element '" + currentElement.peek()
+//	      + "' contains text: " + cdata);
+	   if (cdata.contains("xlink:href=") == true) {
+		   String[] parts = cdata.split(" ");
+		  for (int i=0; i < parts.length; i++) {
+			  if(parts[i].contains("xlink:href=")) {
+				  String a= parts[i].substring(19);
+				  a = a.substring(0,a.length()-1);
+				//  System.out.println(a);
+				  list.add(a);
+			  }
+		  }
+	   };
+	  }
 
 	@Override
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {

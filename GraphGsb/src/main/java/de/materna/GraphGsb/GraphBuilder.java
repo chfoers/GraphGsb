@@ -65,6 +65,7 @@ public class GraphBuilder {
 				}
 			}
 		}
+	
 		setSelfLoops();
 		getTarjan();
 		return g;
@@ -92,6 +93,7 @@ public class GraphBuilder {
 				}
 			}
 		}
+
 		createStringGraphOBlatt();
 		getTarjan();
 		return g;
