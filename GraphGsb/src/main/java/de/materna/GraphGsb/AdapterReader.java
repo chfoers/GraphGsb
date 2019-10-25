@@ -18,7 +18,6 @@ public class AdapterReader {
 }
 	public void printGraphB(ArrayList<String> s) {
 		reader.printGraphB(source.getList());
-
 	}
 
 	public void printGraphA(ArrayList<String> s2) {
