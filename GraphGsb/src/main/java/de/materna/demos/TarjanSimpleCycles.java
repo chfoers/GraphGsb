@@ -21,19 +21,7 @@ import org.jgrapht.*;
 
 import java.util.*;
 
-/**
- * Find all simple cycles of a directed graph using the Tarjan's algorithm.
- *
- * <p>
- * See:<br>
- * R. Tarjan, Enumeration of the elementary circuits of a directed graph, SIAM J. Comput., 2 (1973),
- * pp. 211-216.
- *
- * @param <V> the vertex type.
- * @param <E> the edge type.
- *
- * @author Nikolay Ognyanov
- */
+
 public class TarjanSimpleCycles<V, E>
     implements
     DirectedSimpleCycles<V, E>
@@ -110,6 +98,7 @@ public class TarjanSimpleCycles<V, E>
         }
 
         List<List<V>> result = cycles;
+     
         clearState();
         return result;
     }

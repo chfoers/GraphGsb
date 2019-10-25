@@ -9,8 +9,6 @@ import org.jgrapht.graph.*;
 import org.jgrapht.io.*;
 //import org.jgrapht.traverse.*;
 
-import de.materna.demos.TarjanSimpleCycles;
-
 //import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -19,18 +17,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author cfoerste erhält die Daten vom GraphContentHandler Erstellt Graphen
+ *         und gibt sie aus.
+ */
+
 public class GraphBuilder {
 
-	public static HashMap<String, ArrayList<String>> listeKnoten = new HashMap<String, ArrayList<String>>();
-	// fillList wird bei Klasse GraphContentHandler gefüllt
-	public static ArrayList<String> fillList = new ArrayList<String>();
+	public static HashMap<String, ArrayList<String>> listeKnoten = new HashMap<String, ArrayList<String>>(); // Hilfsliste,
+																												// zur
+																												// Graphenerstellung
+	public static ArrayList<String> fillList = new ArrayList<String>(); // Hilfsliste, diese wird vom
+																		// GraphContentHandler gefüllt
 	public static Graph<String, DefaultEdge> g = new DirectedPseudograph<>(DefaultEdge.class);
-	public static List<String> endVertices = new ArrayList<>();
-	public static Set<DefaultEdge> outgoingEdge;
+	public static List<String> endVertices = new ArrayList<>(); // Liste, wird mit Blätter gefüllt/gelöscht
+
 	static TarjanSimpleCycles<String, DefaultEdge> cyc = new TarjanSimpleCycles<String, DefaultEdge>();
 	public static Set<String> vertices = g.vertexSet();
-	public static List<String> neighborList;
-	public static List<String> ausgabeKnoten = new ArrayList<>();
+	public static List<String> neighborList; // Hilfsliste, Identifizierung ob Tarjan Nachbarn hat
+	public static List<String> ausgabeKnoten = new ArrayList<>(); // Liste, diese wird gefüllt und dem Output übergeben
 
 	public static FileOutput fileOutput = new FileOutput();
 
@@ -65,7 +70,7 @@ public class GraphBuilder {
 				}
 			}
 		}
-	
+
 		setSelfLoops();
 		getTarjan();
 		return g;
@@ -105,6 +110,7 @@ public class GraphBuilder {
 		boolean p = true;
 		String vertex = "";
 		cyc.setGraph(g);
+
 		List<List<String>> listTarjan = cyc.findSimpleCycles();
 
 		for (int i = 0; i < listTarjan.size(); i++) {
@@ -170,4 +176,5 @@ public class GraphBuilder {
 			createStringGraphOBlatt();
 		}
 	}
+
 }

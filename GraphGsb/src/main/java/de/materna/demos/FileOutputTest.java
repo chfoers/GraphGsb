@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FileOutputTest {
 	public static int z = 0;
-	public static List<String> ausgabeKnoten = new ArrayList<String>();
+	public List<String> ausgabeKnoten = new ArrayList<String>();
 	
 	public void setAusgabeKnoten (List<String> ausgabeKnoten) {
 		this.ausgabeKnoten = ausgabeKnoten;

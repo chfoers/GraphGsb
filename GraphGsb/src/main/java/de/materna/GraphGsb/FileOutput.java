@@ -5,22 +5,27 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.List;
+
+/**
+ * @author cfoerste
+ * Schreibt die Pfade in Textdateien.
+ * Pro Blatt eine Textdatei (Ebene)
+ */
 
 public class FileOutput {
 
-	public static int z = 0;
+	public static int z = 0; //Hilfsvariable, aufzählen der Textdatei
 	public static List<String> ausgabeKnoten = new ArrayList<String>();
 
 	public void setAusgabeKnoten(List<String> ausgabeKnoten) {
-		this.ausgabeKnoten = ausgabeKnoten;
+		FileOutput.ausgabeKnoten = ausgabeKnoten;
 	}
 
 	public List<String> getAusgabeKnoten() {
 		return ausgabeKnoten;
-	}
-
+	}	
+	
 	public void delete() {
 		File p = new File("C:\\Users\\cfoerste\\p");
 		File[] paths;

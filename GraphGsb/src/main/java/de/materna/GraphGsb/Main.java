@@ -1,14 +1,21 @@
 package de.materna.GraphGsb;
 
+/**
+ * * @author cfoerste
+ * Start der main Klasse.
+ * Auswahl zwischen Algorithmus A oder B
+ */
+
 public class Main {
 
 	public static void main(String[] args) {
-	//algA();
-	algB();
+	
+	algA();
+	//algB();
 	}
-
+	
+	
 	public static void algB() {
-		System.out.println();
 		System.out.println("JETZT ALG B");
 		System.out.println();
 		Source z = new Filesystem();
@@ -22,7 +29,6 @@ public class Main {
 	}
 
 	public static void algA() {
-		System.out.println();
 		System.out.println("JETZT ALG A");
 		System.out.println();
 		Source z2 = new Filesystem();
@@ -33,7 +39,7 @@ public class Main {
 		r2.printGraphA(z2.getList());
 		reportPerformanceFor("end", time);
 
-	}
+}
 
 	private static void reportPerformanceFor(String msg, long refTime) {
 
